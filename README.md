@@ -1,0 +1,2 @@
+# suorganizer
+Django unleashed project
