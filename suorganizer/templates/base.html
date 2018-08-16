@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+            Startup Organizer
+        {% endblock title %}
+    </title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+    <div>
+        <header>
+            <h1>Startup Organizer</h1>
+        </header>
+        <main>
+            {% block content %}
+                This is default content!
+            {% endblock content %}
+        </main>
+    </div>
+
+    <footer>
+        <p>
+            &copy; 2015
+            <a href="https://AndrewsForge.com/">
+                Andrew Pinkham
+            </a>
+        </p>
+        <p>
+            Created for
+            <a href="https://Django-Unleashed.com/">
+                Django Unleashed
+            </a>
+        </p>
+    </footer>
+
+</body>
+</html>
