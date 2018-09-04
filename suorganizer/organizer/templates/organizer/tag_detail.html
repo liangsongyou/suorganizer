@@ -5,6 +5,18 @@
 {% endblock title %}
 
 {% block content %}
+    <ul>
+        <li>
+            <a href="{{ tag.get_update_url }}">
+                Edit Tag
+            </a>
+        </li>
+        <li>
+            <a href="{{ tag.get_delete_url }}">
+                Delete Tag
+            </a>
+        </li>
+    </ul>
     <h2>
         {{ tag.name|title }}
     </h2>

@@ -8,6 +8,18 @@
 <article>
 
     <h2>{{ startup.name }}</h2>
+    <ul>
+        <li>
+            <a href="{{ startup.get_update_url }}">
+                Edit Startup
+            </a>
+        </li>
+        <li>
+            <a href="{{ startup.get_delete_url }}">
+                Delete Startup
+            </a>
+        </li>
+    </ul>
     <dl>
         <dt>Date Founded</dt>
             <dd>{{ startup.founded_date|date:"F jS, Y" }}</dd>
@@ -30,14 +42,31 @@
     {% if startup.newslink_set.all %}
         <section>
             <h3>Recent News</h3>
+            <p>
+                <a href="{% url 'organizer_newslink_create' %}">
+                    Add Article
+                </a>
+            </p>
             <ul>
                 {% for newslink in startup.newslink_set.all %}
                     <li>
                         <a href="{{ newslink.link }}">
                             {{ newslink.title|title }}
                         </a>
+
+                    </li>
+                    <li>
+                        <a href="{{ newslink.get_update_url }}">
+                            Update
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ newslink.get_delete_url }}">
+                            Delete Newslink
+                        </a>
                     </li>
                 {% endfor %}
+                
             </ul>
         </section>
     {% endif %}
