@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'organizer',
     'blog',
+    'contact',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,3 +106,39 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Email
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SERVER_EMAIL = 'contact@django-unleashed.com'
+DEFAULT_FROM_EMAIL = 'no-reply@django-unleashed.com'
+EMAIL_SUBJECT_PREFIX = '[Startup Organizer]'
+MANAGERS = (
+    ('Us', 'ourselves@django-unleashed.com'),
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
