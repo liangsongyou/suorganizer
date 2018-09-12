@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import (
+from organizer.views import (
     NewsLinkCreate, NewsLinkUpdate, NewsLinkDelete,)
 
 urlpatterns = [

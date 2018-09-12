@@ -17,19 +17,44 @@
                 <a href="{{ startup.get_absolute_url }}">
                     {{ startup.name }}
                 </a>
+                <ul>
+                    <li>
+                        <a href="{{ startup.get_update_url }}">
+                            Edit Startup
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ startup.get_delete_url }}">
+                            Delete Startup
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li>
-                <a href="{{ startup.get_update_url }}">
-                    Edit Startup
-                </a>
-            </li>
-            <li>
-                <a href="{{ startup.get_delete_url }}">
-                    Delete Startup
-                </a>
-            </li>
+            
         {% empty %}
             <li><em>No Startups Available</em></li>
         {% endfor %}
     </ul>
+    {% if is_paginated %}
+        <ul>
+            {% if previous_page_url %}
+            <li>
+                <a href="?page={{ previous_page_url }}">
+                    Previous
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                Page {{ startup_list.number }}
+                of {{ paginator.num_pages }}
+            </li>
+            {% if next_page_url %}
+            <li>
+                <a href="?page={{ next_page_url }}">
+                    Next
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    {% endif %}
 {% endblock content %}

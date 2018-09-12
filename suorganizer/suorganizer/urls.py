@@ -11,12 +11,14 @@ from organizer.urls import (
     tag as tag_urls)
 
 urlpatterns = [
-    url(r'^$', redirect_root),
+    
     url(r'^newslink/', include(newslink_urls)),
     url(r'^startup/', include(startup_urls)),
-    url(r'^tag/', include(tag_ruls)),
+    url(r'^tag/', include(tag_urls)),
     url(r'^contact/', include(contact_urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^blog/', include(blog_urls)),
-    url(r'^', include(organizer_urls)),
+    url(r'^$', redirect_root),
+    # url(r'^', include(organizer_urls)),
+    
 ]

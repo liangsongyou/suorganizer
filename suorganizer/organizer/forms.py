@@ -21,13 +21,13 @@ class TagForm(SlugCleanMixin, forms.ModelForm):
         return self.cleaned_data['name'].lower()
         
 
-class NewsLinkForm(form.ModelForm):
+class NewsLinkForm(forms.ModelForm):
     class Meta:
         model = NewsLink
         fields = '__all__'
 
 
-class StartupForm(SlugCleanMixin, form.ModelForm):
+class StartupForm(SlugCleanMixin, forms.ModelForm):
     class Meta:
         model = Startup
         fields = '__all__'

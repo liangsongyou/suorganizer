@@ -1,12 +1,12 @@
 from django.conf.urls import url
 
-from .views import (
-    StartupCreate, startup_list,startup_detail, 
-    StartupUpdate, Startupdelete)
+from organizer.views import (
+    StartupCreate, StartupList,startup_detail, 
+    StartupUpdate, StartupDelete)
 
 urlpatterns = [
     url(r'^$',
-        startup_list,
+        StartupList.as_view(),
         name='organizer_startup_list'),
     url(r'^create/$',
         StartupCreate.as_view(),
@@ -19,5 +19,5 @@ urlpatterns = [
         name='organizer_startup_update'),
     url(r'^(?P<slug>[\w\-]+)/delete/$',
         StartupDelete.as_view(),
-        name='organizer_startup_delete')，
+        name='organizer_startup_delete'),
 ]
