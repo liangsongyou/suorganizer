@@ -1,3 +1,5 @@
+{% load flatpages %}
+{% get_flatpages as flatpages %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +39,13 @@
                         Contact
                     </a>
                 </li>
+                {% for page in flatpages %}
+                   <li>
+                       <a href="{{ page.get_absolute_url }}">
+                           {{ page.title }}
+                       </a>
+                   </li> 
+                {% endfor %}
             </ul>
         </nav>
     </div>
