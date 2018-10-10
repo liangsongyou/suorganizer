@@ -33,19 +33,20 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
+    
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.flatpages',
     'django.contrib.sites',
     'django_extensions',
     'organizer',
     'blog',
     'contact',
     'core',
+    'user',
+    'django.contrib.admin',
 
 )
 
@@ -113,6 +114,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
 # Email
@@ -125,6 +127,53 @@ MANAGERS = (
     ('Us', 'ourselves@django-unleashed.com'),
 )
 
+# Loging
+
+from .log_filters import ManagementFilter
+
+verbose = (
+        "[%(asctime)s] %(levelname)s"
+        "[%(name)s:%(lineno)s] %(message)s")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers':False,
+    'filters':{
+        'remove_migration_sql':{
+            '()': ManagementFilter,
+        },
+    },
+    'handlers':{
+        'console':{
+            'class':'logging.StreamHandler'
+        },
+    },
+    'formatters':{
+        'verbose':{
+            'format': verbose,
+            'datefmt':"%Y-%b-%c %H:%M:%S"
+        },
+    },
+    'loggers':{
+        'django':{
+            'handlers':['console'],
+            'level':'DEBUG',
+            'formatter':'verbose'
+        }
+
+    },
+
+
+}
+
+
+# Login
+
+from django.core.urlresolvers import reverse_lazy
+
+LOGIN_REDIRECT_URL = reverse_lazy('blog_post_list')
+LOGIN_URL = reverse_lazy('dj-auth:login')
+LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
 
 

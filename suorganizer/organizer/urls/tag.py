@@ -1,18 +1,19 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from organizer.views import (
     TagCreate, TagList, TagPageList,
-    tag_detail, TagDelete, TagUpdate)
+    TagDetail, TagDelete, TagUpdate)
 
 urlpatterns = [
     url(r'^$', 
         TagList.as_view(),
         name='organizer_tag_list'),
-    url(r'^create/$',
-        TagCreate.as_view(),
-        name='organizer_tag_create'),
+    # url(r'^create/$',
+    #     TagCreate.as_view(),
+    #     name='organizer_tag_create'),
     url(r'^(?P<slug>[\w\-]+)/$', 
-        tag_detail,
+        TagDetail.as_view(),
         name='organizer_tag_detail'),
     url(r'^(?P<slug>[\w\-]+)/update/$',
         TagUpdate.as_view(),
@@ -20,7 +21,8 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/delete/$',
         TagDelete.as_view(),
         name='organizer_tag_delete'),
-    url(r'^(?P<page_number>\d+)/$',
-        TagPageList.as_view(),
-        name='organizer_tag_page'),
+    url(r'^create/$',
+        login_required(
+            TagCreate.as_view()),
+        name='organizer_tag_create'),
 ]

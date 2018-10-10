@@ -18,6 +18,10 @@ class Post(models.Model):
         verbose_name='blog post'
         ordering = ['-pub_date', 'title']
         get_latest_by = 'pub_date'
+        permissions = (
+            ("view_future_post",
+             "Can view unpublished Post"),
+        )
     
     def __str__(self):
         return "{} on {}".format(
@@ -28,7 +32,7 @@ class Post(models.Model):
         return reverse(
             'blog_post_detail',
             kwargs={'year':self.pub_date.year,
-                    'month':self.pub_date.month,
+                    'month':self.pub_date.pub_date.month,
                     'slug':self.slug})
 
     def get_update_url(self):
@@ -44,5 +48,51 @@ class Post(models.Model):
             kwargs={'year':self.pub_date.year,
                     'month':self.pub_date.month,
                     'slug':self.slug})
+
+    def get_archive_year_url(self):
+        return reverse(
+            'blog_post_archive_year',
+            kwargs={'year':self.pub_date.year})
+
+    def get_archive_month_url(self):
+        return reverse(
+            'blog_post_archive_month',
+            kwargs={'year':self.pub_date.year,
+                    'month':self.pub_date.month})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         

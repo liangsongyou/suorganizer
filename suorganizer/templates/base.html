@@ -1,5 +1,4 @@
-{% load flatpages %}
-{% get_flatpages as flatpages %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,13 +10,48 @@
     </title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    {% block head %}
+        
+    {% endblock head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'site/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/skeleton.css' %}">
 </head>
 <body>
-    <div>
-        <header>
-            <h1>Startup Organizer</h1>
+    <div class="container">
+        <header class="row">
+            <div class="offset-by-one ten columns">
+                <h1 class="logo">Startup Organizer</h1>
+            </div>
+            <div class="status row">
+                <div class="offset-by-eight four columns">
+                    <ul class="inline">
+                        {% if user.is_authenticated %}
+                            <li>
+                                <a href="{% url 'dj-auth:logout' %}? 
+                                            next={{ request.path }} ">Log Out</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dj-auth:profile' %}">
+                                    View Profile
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{% url 'dj-auth:login' %}?
+                                            next={{ request.path }}">
+                                    Log In
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dj-auth:create' %}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </header>
+
         <main>
             {% block content %}
                 This is default content!
@@ -46,14 +80,19 @@
                        </a>
                    </li> 
                 {% endfor %}
+                <li>
+                    <a href="{% url 'about_site' %}">
+                        About
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
 
     {% if messages %}
-        <div>
-            <div>
-                <ul>
+        <div class="row">
+            <div class="twelve columns">
+                <ul class="messages">
                     {% for message in message %}
                         {% if message.tags %}
                             <li class="{{ message.tags }}">

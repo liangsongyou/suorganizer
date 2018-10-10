@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 from django.core.urlresolvers import reverse
 
@@ -25,6 +27,10 @@ class Tag(models.Model):
         return reverse('organizer_tag_delete',
                         kwargs={'slug':self.slug})
 
+    def published_posts(self):
+        return self.blog_posts.filter(pub_date__lt=date.today())
+
+
 class Startup(models.Model):
     name = models.CharField(max_length=31, db_index=True)
     slug = models.SlugField(max_length=31, unique=True,
@@ -45,6 +51,11 @@ class Startup(models.Model):
     def get_absolute_url(self):
         return reverse('organizer_startup_detail',
                       kwargs={'slug':self.slug})
+
+    def get_newslink_create_url(self):
+        return reverse(
+            'organizer_newslink_create',
+            kwargs={'startup_slug':self.slug})
 
     def get_update_url(self):
         return reverse('organizer_startup_update',
@@ -75,12 +86,15 @@ class NewsLink(models.Model):
 
     def get_update_url(self):
         return reverse('organizer_newslink_update',
-                       kwargs={'pk':self.pk})
+                       kwargs={
+                            'startup_slug':self.startup.slug,
+                            'newslink_slug':self.slug})
 
     def get_delete_url(self):
         return reverse(
             'organizer_newslink_delete',
-            kwargs={'pk': self.pk})
+            kwargs={'startup_slug': self.startup.slug,
+                    'newslink_slug': self.slug})
 
 
 

@@ -1,1 +1,66 @@
 {% extends parent_template|default:"base.html" %}
+
+{% load staticfiles %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'organizer/style.css' %}">
+{% endblock head %}
+
+{% block content %}
+    <div class="row">
+        <section class="eight columns">
+        {% block org_content %}
+            This is default content!
+        {% endblock org_content %}
+        </section>
+
+        <section class="desktop four columns">
+            {% block create_button %}
+                
+            {% endblock create_button %}
+        </section>
+    </div>
+
+    <div class="row">
+        <div class="twelve columns">
+            {% block content_footer %}
+                {% if is_paginated %}
+                    <ul class="pagination">
+                        {% if previous_page_url %}
+                            <li>
+                                <a href="{{ previous_page_url }}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if first_page_url %}
+                            <li>
+                                <a href="{{ first_page_url}}">
+                                    First
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            Page {{ page_obj.number }}
+                            of {{ paginator.num_pages }}
+                        </li>
+                        {% if last_page_url %}
+                            <li>
+                                <a href="{{ last_page_url }}">
+                                    Last
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if next_page_url %}
+                            <li>
+                                <a href="{{ next_page_url }}">
+                                    Next
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            {% endblock content_footer %}
+        </div>
+    </div>
+
+{% endblock content %}

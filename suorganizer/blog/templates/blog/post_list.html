@@ -47,4 +47,53 @@
     {% empty %}
         <p><em>No Blog Posts Available</em></p>
     {% endfor %}
+
+    <div class="desktop four columns">
+        <h3>Post Archives</h3>
+        <ul>
+            {% for y in date_list %}
+                <li>
+                    <a href="{% url 'blog_post_archive_year' y|date:'Y' %}">
+                        {{ y|date:'Y' }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
 {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

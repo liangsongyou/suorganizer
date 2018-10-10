@@ -1,161 +1,117 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import View
+from django.views.generic import (
+    View, DetailView, CreateView, 
+    DeleteView, ListView, DateDetailView)
 from django.core.paginator import (
     EmptyPage, PageNotAnInteger, Paginator)
 from django.core.urlresolvers import reverse_lazy
+from django.contrib.auth.decorators import (
+    login_required, 
+    user_passes_test,
+    permission_required)
+from django.utils.decorators import method_decorator
+from django.contrib.auth import PermissionDenied
 
-from .models import Tag, Startup
+
+
+from .models import Tag, Startup, NewsLink
 from .forms import (
     TagForm, StartupForm, NewsLinkForm)
-from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
+from .utils import (
+    CreateView, ObjectUpdateMixin, ObjectDeleteMixin,
+    PageLinksMixin,NewsLinkGetObjectMixin, StartupContextMixin)
+from user.decorators import require_authenticated_permission, class_login_required
+
+from core.utils import UpdateView
 
 
-def tag_detail(request, slug):
-    tag = get_object_or_404(Tag, slug__iexact=slug)
-    return render(
-        request,
-        'organizer/tag_detail.html',
-        {'tag':tag})
-
-def startup_detail(request, slug):
-    startup = get_object_or_404(
-        Startup, slug__iexact=slug)
-    return render(
-        request,
-        'organizer/startup_detail.html',
-        {'startup':startup})
+class TagList(PageLinksMixin, ListView):
+    paginate_by = 5
+    model = Tag
 
 
-class TagList(View):
-    template_name = 'organizer/tag_list.html'
-
-    def get(self, request):
-        tags = Tag.objects.all()
-        context = {
-            'tag_list':tags,
-        }
-        return render(
-            request, self.template_name, context)
+class StartupList(PageLinksMixin, ListView):
+    model = Startup
+    paginate_by = 5
 
 
-class StartupList(View):
-    page_kwarg = 'page'
-    paginate_by = 2
-    template_name = 'organizer/startup_list.html'
-
-    def get(self, request):
-        startups = Startup.objects.all()
-        paginator = Paginator(startups, self.paginate_by)
-        page_number = request.GET.get(self.page_kwarg)
-
-        try:
-            page = paginator.page(page_number)
-        except PageNotAnInteger:
-            page = paginator.page(1)
-        except EmptyPage:
-            page = paginator.page(paginator.num_pages)
-
-        if page.has_previous():
-            prev_url = "?{pkw}={n}".format(
-                pkw=self.page_kwarg,
-                n=page.previous_page_number())
-        else:
-            prev_url = None
-
-        if page.has_next():
-            next_url = "?{pkw}={n}".format(
-                pkw=self.page_kwarg,
-                n=page.next_page_number())
-        else:
-            next_url = None
-
-        context = {
-            'is_paginated':page.has_other_pages(),
-            'next_page_url':next_url,
-            'paginator':paginator,
-            'previous_page_url':prev_url,
-            'startup_list':page,
-        }
-        return render(request, self.template_name, context)
-
-
-class NewsLinkCreate(ObjectCreateMixin, View):
+class NewsLinkCreate(
+                     NewsLinkGetObjectMixin,
+                     StartupContextMixin,
+                     CreateView):
     form_class = NewsLinkForm
-    template_name = 'organizer/newslink_form.html'
+    model = NewsLink
+
+    def get_initial(self):
+        startup_slug = self.kwargs.get(
+            self.startup_slug_url_kwarg)
+        self.startup = get_object_or_404(
+            Startup, slug__iexact=startup_slug)
+        initial = {
+            self.startup_context_object_name:
+                self.startup,
+        }
+        initial.update(self.initial)
+        return initial
 
 
-class StartupCreate(ObjectCreateMixin, View):
+class StartupCreate(CreateView):
     form_class = StartupForm
+    model = Startup
     template_name = 'organizer/startup_form.html'
 
-class TagCreate(ObjectCreateMixin, View):
+
+def in_contrib_group(user):
+    if user.groups.filter(name='contributors'):
+        return True
+    else:
+        raise PermissionDenied
+
+
+@require_authenticated_permission('organizer.add_tag')
+class TagCreate(CreateView):
     form_class = TagForm
+    model = Tag
     template_name = 'organizer/tag_form.html'
 
-
-class NewsLinkUpdate(View):
-    form_class = NewsLinkForm
-    template_name = 'organizer/newslink_form_update.html'
-
-    def get(self, request, pk):
-        newslink = get_object_or_404(NewsLink, pk=pk)
-        context = {
-            'form': self.form_class(instance=newslink),
-            'newslink': newslink,
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk):
-        newslink = get_object_or_404(NewsLink, pk=pk)
-        bound_form = self.form_class(request.POST, instance=newslink)
-        if bound_form.is_valid():
-            new_newslink = bound_form.save()
-            return redirect(new_newslink)
-        else:
-            context = {
-                'form': bound_form,
-                'newslink': newslink,
-            }
-            return render(request, self.template_name, context)
-
-class TagUpdate(ObjectUpdateMixin, View):
-    form_class = TagForm
-    model = Tag
-    template_name = 'organizer/tag_form_update.html'
-
-
-class StartupUpdate(ObjectUpdateMixin, View):
-    form_class = StartupForm
-    model = Startup
-    template_name = 'organizer/startup_form_update.html'
-
-
-class NewsLinkDelete(View):
-
-    def get(self, request, pk):
-        newslink = get_object_or_404(NewsLink, pk=pk)
-        return render(
-            request,
-            'organizer/newslink_confirm_delete.html',
-            {'newslink': newslink})
-
-    def post(self, request, pk):
-        newslink = get_object_or_404(NewsLink, pk=pk)
-        startup = newslink.startaup
-        newslink.delete()
-        return redirect(startup)
     
 
-class TagDelete(ObjectDeleteMixin, View):
+
+class NewsLinkUpdate(
+        NewsLinkGetObjectMixin,
+        StartupContextMixin,
+        UpdateView):
+    form_class = NewsLinkForm
+    model = NewsLink
+    slug_url_kwarg = 'newslink_slug'
+
+
+@require_authenticated_permission('organizer.change_tag')
+class TagUpdate(UpdateView):
+    form_class = TagForm
+    model = Tag
+
+
+@require_authenticated_permission('organizer.change_startup')
+class StartupUpdate(UpdateView):
+    form_class = StartupForm
+    model = Startup
+
+
+class NewsLinkDelete(StartupContextMixin,DeleteView):
+    model = NewsLink
+    slug_url_kwarg = 'newslink_slug'
+
+
+class TagDelete(DeleteView):
     model = Tag
     success_url = reverse_lazy('organizer_tag_list')
-    template_name = 'organizer/tag_confirm_delete.html'
 
 
-class StartupDelete(ObjectDeleteMixin, View):
+class StartupDelete(DeleteView):
     model = Startup
     success_url = reverse_lazy('organizer_startup_list')
-    template_name = 'organizer/startup_confirm_delete.html'
+    
 
 
 class TagPageList(View):
@@ -203,6 +159,17 @@ class TagPageList(View):
             request, self.template_name, context)
 
 
+class TagDetail(DetailView):
+
+    context_object_name = 'tag'
+    model = Tag
+    template_name = 'organizer/tag_detail.html'
+
+class StartupDetail(DetailView):
+
+    context_object_name = 'startup'
+    model = Startup
+    template_name = 'organizer/startup_detail.html'
 
 
 
