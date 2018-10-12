@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from .views import (
     DisableAccout, ActivateAccount, CreateAccount,
-    ResentActivationEmail, ProfileDetail, ProfileUpdate,
+    ResendActivationEmail, ProfileDetail, ProfileUpdate,
     PublicProfileDetail)
 
 
@@ -113,7 +113,7 @@ urlpatterns = [
     url(r'^profile/edit/$',
         ProfileUpdate.as_view(),
         name='profile_update'),
-    url(r'(?P<slug>[\w\-]+/$',
+    url(r'(?P<slug>[\w\-]+)/$',
         PublicProfileDetail.as_view(),
         name='public_profile'),
 ]

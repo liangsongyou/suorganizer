@@ -1,15 +1,20 @@
 {% extends parent_template|default:"blog/base_blog.html" %}
 
 {% block title %}
-    {{ block.super }} - Post List
+    {{ block.super }} - Blog
 {% endblock title %}
 
 {% block content %}
-    <div>
-        <a href="{% url 'blog_post_create' %}">
-            Write New Blog Post
-        </a>
-    </div>
+<div class="row">
+    <div class="eight columns">
+    {% if perms.blog.add_post %}
+        <div class="mobile">
+          <a
+              href="{% url 'blog_post_create' %}"
+              class="button button-primary">
+            Write New Blog Post</a>
+        </div>
+    {% endif %}
     {% for post in post_list %}
         <article>
             <header>
@@ -18,18 +23,24 @@
                         {{ post.title|title }}
                     </a>
                 </h2>
-                <ul>
-                    <li>
-                        <a href="{{ post.get_update_url }}">
-                            Edit Post
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ post.get_delete_url }}">
-                            Delete Post
-                        </a>
-                    </li>
-                </ul>
+                {% if perms.blog.change_post or perms.blog.delete_post %}
+                  <ul class="inline">
+                    {% if perms.blog.change_post %}
+                      <li>
+                        <a
+                            href="{{ post.get_update_url }}"
+                            class="button">
+                          Edit Post</a></li>
+                    {% endif %}
+                    {% if perms.blog.delete_post %}
+                      <li>
+                        <a
+                            href="{{ post.get_delete_url }}"
+                            class="button">
+                          Delete Post</a></li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
                 <p>
                     Written on:
                     <time datetime="{{ post.pub_date|date:'Y-m-d' }}">
@@ -38,17 +49,23 @@
                 </p>
             </header>
             <p>{{ post.text|truncatewords:20 }}</p>
-            <p>
+            <p class="read-more">
                 <a href="{{ post.get_absolute_url }}">
                     Read more&hellip;
                 </a>
             </p>
         </article>
     {% empty %}
-        <p><em>No Blog Posts Available</em></p>
+        <p class="center"><em>No Blog Posts Available</em></p>
     {% endfor %}
-
+    </div>
     <div class="desktop four columns">
+        {% if perms.blog.add_post %}
+            <a
+              href="{% url 'blog_post_create' %}"
+              class="button button-primary">
+            Write New Blog Post</a>
+          {% endif %}
         <h3>Post Archives</h3>
         <ul>
             {% for y in date_list %}
@@ -60,7 +77,7 @@
             {% endfor %}
         </ul>
     </div>
-
+</div>
 {% endblock content %}
 
 

@@ -71,7 +71,7 @@ class CreateAccount(MailContextViewMixin, View):
                     error(request, err)
                 return redirect('dj-auth:resend_activation')
         return TemplateResponse(
-            request, self.template_name
+            request, self.template_name,
             {'form':bound_form})
 
 

@@ -10,6 +10,10 @@ from organizer.urls import (
     tag as tag_urls)
 from user import urls as user_urls
 
+
+admin.site.site_header = 'Startup Organizer Admin'
+admin.site.site_title = 'Startup Organizer Site Admin'
+
 urlpatterns = [
     
     url(r'^startup/', include(startup_urls)),
@@ -30,3 +34,5 @@ urlpatterns = [
                         namespace='dj-auth')),
     
 ]
+
+
