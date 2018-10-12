@@ -1,6 +1,7 @@
 from django.db import models
 from organizer.models import Startup, Tag
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 
 class Post(models.Model):
@@ -13,6 +14,7 @@ class Post(models.Model):
                                 auto_now_add=True)
     tags = models.ManyToManyField(Tag,related_name='blog_posts', blank=True)
     startups = models.ManyToManyField(Startup, blank=True, related_name='blog_posts')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='blog_posts')
 
     class Meta:
         verbose_name='blog post'

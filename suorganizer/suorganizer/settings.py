@@ -176,6 +176,9 @@ LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
 
+# User
+
+AUTH_USER_MODEL = 'user.User'
 
 
 

@@ -1,7 +1,7 @@
 {% extends parent_template|default:"user/base_user.html" %}
 
 {% block title %}
-    {{ block.super }} - {{ profile.user.get_username }}'s Profile
+    {{ block.super }} - {{ profile.user.get_full_name }}'s Profile
 {% endblock title %}
 
 {% block content %}
@@ -11,11 +11,38 @@
         {% else %}
             <div class="offset-by-two eight columns">
         {% endif %}
-            <h2>About {{ profile.user.get_username }}</h2>
+            <h2>About {{ profile.user.get_full_name }}</h2>
             {{ profile.about|default:"No Profile"|linebreaks }}
         </div>
         {% if user.pk == profile.user.pk %}
         <div class="three columns">
+            {% if perms.blog.view_future_post and profile.user.blog_posts.all %}
+            <section>
+                <h3>Blog Post {{ profile.user.blog_posts|pluralize }}</h3>
+                <ul>
+                    {% for post in profile.user.blog_posts %}
+                        <li>
+                            <a href="{{ post.get_absolute_url }}">
+                                {{ post.title|title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% else profile.user.published_posts|length > 0 %}
+            <section>
+                <h3>Blog Post {{ profile.user.published_posts|pluralize }}</h3>
+                <ul>
+                    {% for post in profile.user.published_posts %}
+                        <li>
+                            <a href="{{ post.get_absolute_url }}">
+                                {{ post.title|title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
             <ul class="task-list">
                 <li>
                     <a href="{% url 'dj-auth:pw_change' %}">

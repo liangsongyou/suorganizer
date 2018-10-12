@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic.dates import (
     DateMixin, MonthMixin as BaseMonthMixin,
     YearMixin as BaseYearMixin, _date_from_string)
@@ -131,7 +131,11 @@ class DateObjectMixin(
             }
 
 
+class PostFormValidMixin:
 
+    def form_valid(self, form):
+        self.object = form.save(self.request)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 
