@@ -38,7 +38,7 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = (
         'is_staff',
         'is_superuser',
-        'profile_joined')
+        'profile__joined')
     search_fields = ('email',)
     ordering = ('email',)
     list_display_links = ('get_name', 'email')

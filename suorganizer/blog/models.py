@@ -1,8 +1,30 @@
+from datetime import date
 from django.db import models
 from organizer.models import Startup, Tag
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
+
+class PostQueryset(models.QuerySet):
+
+    def published(self):
+        return self.filer(pub_date__lte=date.today())
+
+
+# class PostManager(models.Manager):
+
+#     def get_queryset(self):
+#         return PostQueryset(self.model, using=self._db)
+
+#     def published(self):
+#         return self.get_queryset().published()
+
+class BasePostManager(models.Manager):
+
+    def get_by_natural_key(self,pub_date,slug):
+        return self.get(pub_date=pub_date, slug=slug)
+
+PostManager = BasePostManager.from_queryset(PostQueryset)
 
 class Post(models.Model):
     title = models.CharField(max_length=63)
@@ -15,6 +37,7 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag,related_name='blog_posts', blank=True)
     startups = models.ManyToManyField(Startup, blank=True, related_name='blog_posts')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='blog_posts')
+    objects = PostManager()
 
     class Meta:
         verbose_name='blog post'
@@ -65,6 +88,14 @@ class Post(models.Model):
     @property
     def tag_count(self):
         return self.tags.count()
+
+    def natural_key(self):
+        return (self.pub_date, self.slug)
+    natural_key.dependencies = [
+        'organizer.startup',
+        'organizer.tag',
+        'user.user',
+    ]
 
 
 

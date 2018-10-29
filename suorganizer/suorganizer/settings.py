@@ -33,7 +33,7 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = (
-    
+    'user',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -45,7 +45,6 @@ INSTALLED_APPS = (
     'blog',
     'contact',
     'core',
-    'user',
     'django.contrib.admin',
 
 )
@@ -180,7 +179,9 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
 AUTH_USER_MODEL = 'user.User'
 
+# Fixture
 
+FIXTURE_DIRS = (os.path.join(BASE_DIR,'fixtures'),)
 
 
 

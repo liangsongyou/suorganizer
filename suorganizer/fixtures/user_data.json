@@ -1,0 +1,16 @@
+[
+{
+  "model": "user.user",
+  "fields": {
+    "password": "pbkdf2_sha256$20000$kGS06Zf7h3JA$bmmeHPBd2WRPklhEcO01ILMxk39xpnbB04OJXtPfs+0=",
+    "last_login": "2018-10-12T10:28:14.144Z",
+    "is_superuser": true,
+    "email": "yuebei58@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "groups": [],
+    "user_permissions": []
+  },
+  "pk": 1
+}
+]
