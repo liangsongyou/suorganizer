@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'contact',
     'core',
     'django.contrib.admin',
+    'django_toolbar',
 
 )
 

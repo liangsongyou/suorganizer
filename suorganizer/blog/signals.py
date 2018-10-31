@@ -21,4 +21,14 @@ def assign_extra_tags(sender, **kwargs):
                 .distinct().iterator())
             post.tags.add(*tag_pk_set)
         else:
-            pass
+            startup = kwargs.get('instance')
+            tag_pk_set = tuple(
+                startup.tags.values_list(
+                    'pk',flat=True).iterator())
+            PostModel = kwargs.get('model')
+            post_pk_set = kwargs.get('pk_set')
+            posts_dict = (
+                PostModel.objects.in_bulk(
+                    post_pk_set))
+            for post in posts_dict.values():
+                post.tags.add(*tag_pk_set)
